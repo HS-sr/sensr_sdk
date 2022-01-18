@@ -9,7 +9,8 @@ import argparse
 import signal
 import sys
 
-
+count = 0
+prev_value = None
 class ZoneEvenListener(MessageListener):
 
     def __init__(self, address):
@@ -114,6 +115,22 @@ class TimeChecker(MessageListener):
 
         print('Diff: {0} ms'.format(time_diff))
 
+class RecordListener(MessageListener):
+
+    def __init__(self,address):
+        super().__init__(address=address,
+                         listener_type=ListenerType.OUTPUT_MESSAGE)
+
+    def _on_get_output_message(self, message):
+        global count, prev_value
+        assert isinstance(message, sensr_output.OutputMessage), "message should be of type OutputMessage"
+
+        if message.HasField('custom'):
+            curr_val = message.custom.record.saving_progress
+            if curr_val != prev_value:
+                print(f'saving_progress-{count}: {curr_val}')
+                count += 1
+                prev_value = curr_val
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Sample code for the SENSR Python SDK.')
@@ -136,15 +153,7 @@ if __name__ == "__main__":
     example_type = args.example_type
     
     if example_type == "zone":
-        current_listner = ZoneEvenListener(address)
-    elif example_type == "point":
-        current_listner = PointResultListener(address)
-    elif example_type == "object":
-        current_listner = ObjectListener(address)
-    elif example_type == "health":
-        current_listner = HealthListener(address)
-    elif example_type == "time":
-        current_listner = TimeChecker(address)
+        current_listner = RecordListener(address)
     else:
         print("Unrecognized example type")
     if current_listner is not None:
