@@ -1,0 +1,15 @@
+[Unit]
+Description=Sensr Proxy Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c "sleep 20; /usr/bin/python3 /home/discovery/sensr_proxy.py"
+Restart=always
+RestartSec=5
+User=discovery
+WorkingDirectory=/home/discovery
+
+[Install]
+WantedBy=multi-user.target
