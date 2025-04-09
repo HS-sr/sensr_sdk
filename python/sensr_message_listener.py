@@ -26,7 +26,7 @@ class MessageListener(metaclass=ABCMeta):
     def __init__(self, 
                  address="localhost", 
                  listener_type=ListenerType.BOTH, 
-                 output_port = "5050", 
+                 output_port = "6000", 
                  point_port = "5051",
                  use_ssl=False,
                  crt_file_path=""):
